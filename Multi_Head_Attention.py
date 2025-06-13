@@ -9,7 +9,7 @@ def scaled_dot_product_attention(q, k, v, mask=None, dropout_rate=0.1):
     # k: (batch_size, num_heads, seq_len_k, depth) -> (batch_size, num_heads, depth, seq_len_k)
     matmul_qk = tf.matmul(q, k, tranpose_b=True)  # (batch_size, num_heads, seq_len_q, seq_len_k)
 
-    # 转换dk的数据类型
+    # 转换dk的数据类型：取k的最后一个维度为depth，转换为float32
     dk=tf.cast(tf.shape(k)[-1], tf.float32) # depth
     # 缩放注意力得分
     # (batch_size, num_heads, seq_len_q, seq_len_k)
