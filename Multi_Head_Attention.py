@@ -54,7 +54,10 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         self.dropout=Dropout(dropout_rate)
 
     def split_heads(self, x, batch_size):
-        """分割头 x的维度是(batch_size, seq_len, d_model)"""
+        """
+        分割头 
+        x的维度是(batch_size, seq_len, d_model)，分割后x的维度是(batch_size, num_heads, seq_len, d_model//num_heads)
+        """
         # 对最后一个维度进行分割
         x=tf.reshape(x, (batch_size, -1, self.num_heads, self.depth))
         # (batch_size, seq_len, num_heads, d_model/num_heads)
@@ -73,9 +76,9 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         v=self.wv(v) # (batch_size, seq_len_v, d_model)
 
         # 分割头
-        q=self.split_heads(q, batch_size) # (batch_size, seq_len_q, num_heads, d_model//num_heads)
-        k=self.split_heads(k, batch_size) # (batch_size, seq_len_k, num_heads, d_model//num_heads)
-        v=self.split_heads(v, batch_size) # (batch_size, seq_len_v, num_heads, d_model//num_heads)
+        q=self.split_heads(q, batch_size) # (batch_size, num_heads, seq_len_q, d_model//num_heads)
+        k=self.split_heads(k, batch_size) # (batch_size, num_heads, seq_len_k, d_model//num_heads)
+        v=self.split_heads(v, batch_size) # (batch_size, num_heads, seq_len_v, d_model//num_heads)
         # 最后变为(batch_size, num_heads, seq_len, depth)
 
         # 缩放点积注意力
