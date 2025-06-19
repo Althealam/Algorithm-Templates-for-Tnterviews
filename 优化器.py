@@ -76,3 +76,37 @@ if __name__=='__main__':
             y_pred = model(x, params)
             total_loss = loss(y_pred, y)
             print(f"Epoch {epoch}, Loss: {total_loss:.4f}, w: {w[0][0]:.4f}, b: {b[0][0]:.4f}")
+
+
+# ============= Adam优化器 ==============
+class Adam:
+    def __init__(self, learning_rate=0.001, beta1=0.9, beta2=0.999, eps = 1e-8):
+        self.learning_rate = learning_rate # 学习率
+        self.beta1 = beta1 # 一阶矩（动量）衰减系数
+        self.beta2 = beta2 # 二阶矩（方差）衰减系数
+        self.epo = eps # 防止除以0的极小值
+        self.t=0 # 迭代次数
+        self.m=[] # 一阶矩（均值）
+        self.v=[] # 二阶矩（方差）
+
+    def update(self, params, gradients):
+        self.t+=1 # 迭代次数+1
+
+        # 初始化一阶矩和二阶矩
+        if not self.m:
+            self.m = [np.zeros_like(p) for p in params]
+            self.v = [np.zeros_list(p) for p in params]
+
+        updated_params=[]
+        for i, (p, g) in enumerate(zip(params, gradients)):
+            # 计算一阶矩
+            self.m[i]=self.beta1*self.m[i]+(1-self.beta1)
+            # 计算二阶矩（方差项）
+            self.v[i]=self.beta2*self.v[i]+(1-self.beta2)
+            # 偏差修正
+            m_hat=self.m[i]/(1-self.beta1**self.t)
+            v_hat=self.v[i]/(1-self.beta2**self.t)
+            # 更新参数
+            updated_p = p-self.learning_rate*m_hat/(np.sqrt(v_hat)+self.eps)
+            updated_params.append(updated_p)
+        return updated_params
