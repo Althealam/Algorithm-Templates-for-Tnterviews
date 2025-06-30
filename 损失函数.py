@@ -48,3 +48,4 @@ def categorical_cross_entropy(y_true, y_pred):
     loss=-np.sum(y_true*np.log(y_pred), axis=1)
     avg_loss = np.mean(loss)
     return avg_loss
+
