@@ -73,3 +73,4 @@ def compute_gauc(y_true, y_pred, group_ids):
     # 计算auc的mean值
     gauc=np.mean(auc_values)
     return gauc
+
